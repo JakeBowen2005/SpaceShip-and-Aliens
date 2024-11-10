@@ -35,10 +35,7 @@ int main(int argc, const char * argv[]) {
         cout <<  "Could not load spaceship from file";
     }
     Spaceship.setTexture(SpaceshipTex);
-    vector<Sprite> ships;
     Spaceship.setScale(Vector2f(0.09f, 0.09f));
-    ships.push_back(Spaceship);
-    
     
     //Alien
     Texture AlienTex;
@@ -52,6 +49,7 @@ int main(int argc, const char * argv[]) {
     Alien.setScale(Vector2f(0.05f, 0.05f));
     Alien.rotate(270.f);
     aliens.push_back(Alien);
+    int alienSpawnTimer = 0;
     
     while (window.isOpen()) {
         Event event;
@@ -60,17 +58,43 @@ int main(int argc, const char * argv[]) {
                 window.close();
             }
         }
+        
         //Update
+        
+        //Spaceship (player)
+        
+        
+        
+        //Aliens (enemies)
+        if (alienSpawnTimer < 30) {
+            alienSpawnTimer++;
+        }
+        
+        if (alienSpawnTimer >= 30) {
+            float ypos = rand() % static_cast<int>(screen_length + 10.f);
+            Alien.setPosition(screen_width, ypos);
+            aliens.push_back(Alien);
+            alienSpawnTimer = 0;
+            
+        }
+        
+        for (size_t i = 0; i < aliens.size(); i++) {
+            aliens[i].move(-5.f, 0.f);
+            
+            if (aliens[i].getPosition().x < 0) {
+                aliens.erase(aliens.begin() + i);
+            }
+        }
         
         
         
         //Draw
         window.clear();
-        for (size_t i = 0; i < ships.size(); i++) {
-            window.draw(Spaceship);
-        }
+        
+        window.draw(Spaceship);
+        
         for (size_t i = 0; i < aliens.size(); i++) {
-            window.draw(Alien);
+            window.draw(aliens[i]);
         }
         
         window.display();
