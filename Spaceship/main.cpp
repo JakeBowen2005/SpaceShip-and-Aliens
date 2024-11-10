@@ -30,6 +30,7 @@ int main(int argc, const char * argv[]) {
     //Spaceship
     Texture SpaceshipTex;
     Sprite Spaceship;
+    int hp = 10;
     
     if (!SpaceshipTex.loadFromFile("Textures/spaceship.png")) {
         cout <<  "Could not load spaceship from file";
@@ -62,9 +63,15 @@ int main(int argc, const char * argv[]) {
         }
         
         //Update
-        Spaceship.setPosition(Spaceship.getPosition().x, Mouse::getPosition(window).y );
-        
         //Spaceship (player)
+        Spaceship.setPosition(Spaceship.getPosition().x, Mouse::getPosition(window).y );
+        if (Spaceship.getPosition().y > screen_length - 50) {
+            Spaceship.setPosition(Spaceship.getPosition().x, screen_length - Spaceship.getGlobalBounds().width);
+        }
+        if (Spaceship.getPosition().y < 0.f + 50) {
+            Spaceship.setPosition(Spaceship.getPosition().x, 0);
+        }
+
         
         
         
@@ -79,6 +86,15 @@ int main(int argc, const char * argv[]) {
             aliens.push_back(Alien);
             alienSpawnTimer = 0;
             
+        }
+        
+        //Collison
+        
+        for (size_t i = 0; i < aliens.size(); i++) {
+            if (Spaceship.getGlobalBounds().intersects(aliens[i].getGlobalBounds())) {
+                hp--;
+                aliens.erase(aliens.begin() + i);
+            }
         }
         
         for (size_t i = 0; i < aliens.size(); i++) {
