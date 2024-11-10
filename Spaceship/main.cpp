@@ -36,6 +36,8 @@ int main(int argc, const char * argv[]) {
     }
     Spaceship.setTexture(SpaceshipTex);
     Spaceship.setScale(Vector2f(0.09f, 0.09f));
+    Spaceship.setPosition(55.f, screen_length / 2 - Spaceship.getGlobalBounds().height);
+    Spaceship.rotate(45.f);
     
     //Alien
     Texture AlienTex;
@@ -60,6 +62,7 @@ int main(int argc, const char * argv[]) {
         }
         
         //Update
+        Spaceship.setPosition(Spaceship.getPosition().x, Mouse::getPosition(window).y );
         
         //Spaceship (player)
         
@@ -81,7 +84,7 @@ int main(int argc, const char * argv[]) {
         for (size_t i = 0; i < aliens.size(); i++) {
             aliens[i].move(-5.f, 0.f);
             
-            if (aliens[i].getPosition().x < 0) {
+            if (aliens[i].getPosition().x < 0 - Alien.getGlobalBounds().width) {
                 aliens.erase(aliens.begin() + i);
             }
         }
