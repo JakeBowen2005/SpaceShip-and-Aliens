@@ -5,8 +5,8 @@
 //  Created by Jake Bowen on 11/9/24.
 //
 
-//cd Desktop/SFML/Spaceship/Spaceship
-//g++ -o main main.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lsfml-graphics -lsfml-window -lsfml-system
+// cd Desktop/SFML/Spaceship/Spaceship
+// g++ -o main main.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lsfml-graphics  -lsfml-window -lsfml-system
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -30,19 +30,22 @@ int main(int argc, const char * argv[]) {
     //Spaceship
     Texture SpaceshipTex;
     Sprite Spaceship;
+    if (!SpaceshipTex.loadFromFile("Textures/spaceship.png")) {
+        cout <<  "Could not load spaceship from file";
+    }
+    Spaceship.setTexture(SpaceshipTex);
+    Spaceship.setScale(Vector2f(0.07f, 0.07f));
+    Spaceship.setPosition(55.f, screen_length / 2 - Spaceship.getGlobalBounds().height);
+    Spaceship.rotate(45.f);
+    
+    
+    //HP
     float hp = 10;
     RectangleShape hpBar;
     hpBar.setFillColor(Color::Red);
     hpBar.setSize(Vector2f(hp*15.f, 20.f));
     hpBar.setPosition(screen_width / 2 - hpBar.getGlobalBounds().width/2, 5.f);
     
-    if (!SpaceshipTex.loadFromFile("Textures/spaceship.png")) {
-        cout <<  "Could not load spaceship from file";
-    }
-    Spaceship.setTexture(SpaceshipTex);
-    Spaceship.setScale(Vector2f(0.09f, 0.09f));
-    Spaceship.setPosition(55.f, screen_length / 2 - Spaceship.getGlobalBounds().height);
-    Spaceship.rotate(45.f);
     
     //Alien
     Texture AlienTex;
@@ -83,12 +86,12 @@ int main(int argc, const char * argv[]) {
         
         
         //Aliens (enemies)
-        if (alienSpawnTimer < 30) {
+        if (alienSpawnTimer < 45) {
             alienSpawnTimer++;
         }
         
-        if (alienSpawnTimer >= 30) {
-            float ypos = rand() % static_cast<int>(screen_length + 10.f);
+        if (alienSpawnTimer >= 45) {
+            float ypos = rand() % static_cast<int>(screen_length);
             Alien.setPosition(screen_width, ypos);
             aliens.push_back(Alien);
             alienSpawnTimer = 0;
@@ -106,7 +109,7 @@ int main(int argc, const char * argv[]) {
         }
         
         for (size_t i = 0; i < aliens.size(); i++) {
-            aliens[i].move(-5.f, 0.f);
+            aliens[i].move(-7.5, 0.f);
             
             if (aliens[i].getPosition().x < 0 - Alien.getGlobalBounds().width) {
                 aliens.erase(aliens.begin() + i);
