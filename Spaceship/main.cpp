@@ -30,7 +30,11 @@ int main(int argc, const char * argv[]) {
     //Spaceship
     Texture SpaceshipTex;
     Sprite Spaceship;
-    int hp = 10;
+    float hp = 10;
+    RectangleShape hpBar;
+    hpBar.setFillColor(Color::Red);
+    hpBar.setSize(Vector2f(hp*15.f, 20.f));
+    hpBar.setPosition(screen_width / 2 - hpBar.getGlobalBounds().width/2, 5.f);
     
     if (!SpaceshipTex.loadFromFile("Textures/spaceship.png")) {
         cout <<  "Could not load spaceship from file";
@@ -54,10 +58,13 @@ int main(int argc, const char * argv[]) {
     aliens.push_back(Alien);
     int alienSpawnTimer = 0;
     
-    while (window.isOpen()) {
+    while (window.isOpen() && hp > 0) {
         Event event;
         while (window.pollEvent(event)) {
             if (event.type == Event::Closed) {
+                window.close();
+            }
+            if (event.type == Event::KeyPressed && event.key.code == Keyboard::Escape) {
                 window.close();
             }
         }
@@ -65,12 +72,12 @@ int main(int argc, const char * argv[]) {
         //Update
         //Spaceship (player)
         Spaceship.setPosition(Spaceship.getPosition().x, Mouse::getPosition(window).y );
-        if (Spaceship.getPosition().y > screen_length - 50) {
+       /* if (Spaceship.getPosition().y > screen_length - 50) {
             Spaceship.setPosition(Spaceship.getPosition().x, screen_length - Spaceship.getGlobalBounds().width);
         }
         if (Spaceship.getPosition().y < 0.f + 50) {
             Spaceship.setPosition(Spaceship.getPosition().x, 0);
-        }
+        } */
 
         
         
@@ -93,6 +100,7 @@ int main(int argc, const char * argv[]) {
         for (size_t i = 0; i < aliens.size(); i++) {
             if (Spaceship.getGlobalBounds().intersects(aliens[i].getGlobalBounds())) {
                 hp--;
+                hpBar.setSize(Vector2f(hp*15.f, 20.f));
                 aliens.erase(aliens.begin() + i);
             }
         }
@@ -115,6 +123,9 @@ int main(int argc, const char * argv[]) {
         for (size_t i = 0; i < aliens.size(); i++) {
             window.draw(aliens[i]);
         }
+        
+        //UI
+        window.draw(hpBar);
         
         window.display();
     }
